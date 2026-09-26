@@ -4,7 +4,7 @@
 
 - Added `tamework:tame_acquired` for successful wild-to-tamed interactions. This activity works without managed-content mappings. Legacy ownership-claim and mapped tame activities keep their existing behavior.
 
-- Fixed a startup collision with LuckPerms when another plugin registers the lowercase `admin` group. Tamework now uses that same group spelling; permission nodes and access checks are unchanged.
+- Fixed a startup collision with LuckPerms when another plugin registers the lowercase `admin` group. Tamework and its bundled Beacon commands now use that same group spelling; permission nodes and access checks are unchanged.
 
 ## 4.2.0 - Companion Views and Stability - 2026-09-23
 

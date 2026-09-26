@@ -68,6 +68,7 @@ public final class CrashTelemetryService {
         boolean telemetryEnabled = settings.telemetryEnabled();
         boolean breadcrumbsEnabled = settings.telemetryBreadcrumbsEnabled();
         EmbeddedTelemetryService embeddedTelemetry = EmbeddedTelemetryBootstrap.bootstrap(plugin);
+        BeaconPermissionCompatibility.normalizeRegisteredCommand();
         CrashTelemetryService service = new CrashTelemetryService(
                 telemetryEnabled,
                 breadcrumbsEnabled,
@@ -116,6 +117,7 @@ public final class CrashTelemetryService {
             telemetry.recordBreadcrumb("lifecycle", "Embedded telemetry started.");
         }
         telemetry.start();
+        BeaconPermissionCompatibility.normalizeRegisteredCommand();
         syncLastFlushStatus();
     }
 
