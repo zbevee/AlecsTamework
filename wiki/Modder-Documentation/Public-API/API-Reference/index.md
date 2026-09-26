@@ -23,6 +23,7 @@ This subsection contains the reference contract for each public API family.
 - [Policies API Reference](/mod/alecs-tamework/policies-api-reference)
 - [Config Reads API Reference](/mod/alecs-tamework/config-reads-api-reference)
 - [Events API Reference](/mod/alecs-tamework/events-api-reference)
+- [Genuine Tame Activity](/mod/alecs-tamework/genuine-tame-activity)
 - [Interaction Extensions API Reference](/mod/alecs-tamework/interaction-extensions-api-reference)
 - [Trait Effects API Reference](/mod/alecs-tamework/trait-effects-api-reference)
 - [Husbandry Outcomes API Reference](/mod/alecs-tamework/husbandry-outcomes-api-reference)

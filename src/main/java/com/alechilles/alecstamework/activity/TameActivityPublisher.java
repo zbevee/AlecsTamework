@@ -2,6 +2,8 @@ package com.alechilles.alecstamework.activity;
 
 import com.alechilles.alecstamework.api.ActivityHeader;
 import com.alechilles.alecstamework.api.ActivityIds;
+import com.alechilles.alecstamework.api.ActivityDomain;
+import com.alechilles.alecstamework.api.TameAcquiredActivityView;
 import com.alechilles.alecstamework.api.TameActivityView;
 import com.alechilles.alecstamework.api.internal.LiveActivityFeed;
 import com.alechilles.alecstamework.config.managed.ManagedActivityConfigRegistry;
@@ -24,6 +26,29 @@ public final class TameActivityPublisher {
         this.publisher = Objects.requireNonNull(publisher, "publisher");
         this.managedActivities = Objects.requireNonNull(
                 managedActivities, "managedActivities");
+    }
+
+    /** Publishes an actual Tame interaction, then preserves the optional managed activity. */
+    public void publishAcquired(
+            @Nonnull UUID operationId,
+            @Nullable String roleId,
+            @Nullable UUID ownerId,
+            @Nullable UUID companionId
+    ) {
+        if (operationId == null || roleId == null || roleId.isBlank()
+                || ownerId == null || companionId == null) {
+            return;
+        }
+        try {
+            if (publisher.hasInterest(ActivityDomain.TAMING, ActivityIds.TAME_ACQUIRED)) {
+                publisher.publish(new TameAcquiredActivityView(
+                        new ActivityHeader(operationId, ActivityIds.TAME_ACQUIRED, Instant.now()),
+                        roleId, ownerId, companionId));
+            }
+        } catch (RuntimeException | LinkageError ignored) {
+            // A listener cannot undo taming or suppress the existing managed activity.
+        }
+        publish(operationId, roleId, ownerId, companionId);
     }
 
     /** Publishes one acquisition after owner and tame state commit. */

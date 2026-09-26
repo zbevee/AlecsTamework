@@ -11,6 +11,7 @@ import com.alechilles.alecstamework.api.ActivityView;
 import com.alechilles.alecstamework.api.CompanionXpSource;
 import com.alechilles.alecstamework.api.ManagedActivityView;
 import com.alechilles.alecstamework.api.TameActivityView;
+import com.alechilles.alecstamework.api.TameAcquiredActivityView;
 import com.alechilles.alecstamework.companion.population.group.PopulationGroupScope;
 import com.alechilles.alecstamework.config.assets.TwManagedActivityConfig;
 import com.alechilles.alecstamework.config.assets.TwPopulationGroupConfig;
@@ -277,9 +278,15 @@ class InteractionActivityPublicationTest {
             }
         }
 
-        assertEquals(1, published.size());
+        assertEquals(2, published.size());
+        TameAcquiredActivityView acquisition = assertInstanceOf(
+                TameAcquiredActivityView.class, published.getFirst());
+        assertEquals("RoleA", acquisition.roleId());
+        assertEquals(OWNER, acquisition.ownerId());
+        assertEquals(COMPANION, acquisition.companionId());
         TameActivityView activity = assertInstanceOf(
-                TameActivityView.class, published.getFirst());
+                TameActivityView.class, published.get(1));
+        assertEquals(acquisition.header().operationId(), activity.header().operationId());
         assertEquals("RoleA", activity.roleId());
         assertEquals(OWNER, activity.ownerId());
         assertEquals(COMPANION, activity.companionId());

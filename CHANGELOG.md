@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.2.1 - Tame acquisition activity
+
+- Added `tamework:tame_acquired` for successful wild-to-tamed interactions. This activity works without managed-content mappings. Legacy ownership-claim and mapped tame activities keep their existing behavior.
+
 ## 4.2.0 - Companion Views and Stability - 2026-09-23
 
 - Fixed Revive and Recover on ordinary companion cards when a linked animal's old NPC ID was retired after death or loss.

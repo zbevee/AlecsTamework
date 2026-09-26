@@ -77,6 +77,7 @@ class LegacyTamedOwnershipBridgeActivityTest {
             }
         }
 
+        assertEquals(1, published.size(), "Legacy claims must only publish their existing managed event");
         TameActivityView activity = assertInstanceOf(
                 TameActivityView.class, published.getFirst());
         assertEquals(owner, activity.ownerId());

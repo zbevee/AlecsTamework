@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.alechilles.alecstamework.api.ActivityIds;
 import com.alechilles.alecstamework.api.ActivityView;
 import com.alechilles.alecstamework.api.TameActivityView;
+import com.alechilles.alecstamework.api.TameAcquiredActivityView;
 import com.alechilles.alecstamework.companion.capture.CaptureAttemptPublicEventMapper;
 import com.alechilles.alecstamework.companion.capture.CaptureAttemptResolvedEvent;
 import com.alechilles.alecstamework.companion.capture.CaptureTameAndLinkTestFixtures;
@@ -36,6 +37,57 @@ class TameActivityPublisherTest {
             "10000000-0000-0000-0000-000000000001");
     private static final UUID COMPANION = UUID.fromString(
             "20000000-0000-0000-0000-000000000001");
+
+    @Test
+    void genuineTamePublishesWithoutManagedMapping() {
+        List<ActivityView> published = new ArrayList<>();
+        TameActivityPublisher publisher = new TameActivityPublisher(
+                published::add,
+                new ManagedActivityConfigRegistry(new PopulationGroupConfigRegistry()));
+        UUID operationId = UUID.randomUUID();
+
+        publisher.publishAcquired(operationId, " Tamed_Unmanaged ", OWNER, COMPANION);
+
+        assertEquals(1, published.size());
+        TameAcquiredActivityView activity = assertInstanceOf(
+                TameAcquiredActivityView.class, published.getFirst());
+        assertEquals(operationId, activity.header().operationId());
+        assertEquals(ActivityIds.TAME_ACQUIRED, activity.header().actionId());
+        assertEquals("Tamed_Unmanaged", activity.roleId());
+        assertEquals(OWNER, activity.ownerId());
+        assertEquals(COMPANION, activity.companionId());
+    }
+
+    @Test
+    void genuineTameKeepsManagedEventAndOperationIdentity() throws Exception {
+        List<ActivityView> published = new ArrayList<>();
+        TameActivityPublisher publisher = new TameActivityPublisher(
+                published::add, managedRegistry());
+        UUID operationId = UUID.randomUUID();
+
+        publisher.publishAcquired(operationId, "RoleA", OWNER, COMPANION);
+
+        assertEquals(2, published.size());
+        assertInstanceOf(TameAcquiredActivityView.class, published.get(0));
+        assertInstanceOf(TameActivityView.class, published.get(1));
+        assertTrue(published.stream().allMatch(a -> operationId.equals(a.header().operationId())));
+    }
+
+    @Test
+    void failedNativePublisherDoesNotSuppressLegacyManagedEvent() throws Exception {
+        List<ActivityView> published = new ArrayList<>();
+        TameActivityPublisher publisher = new TameActivityPublisher(activity -> {
+            if (activity instanceof TameAcquiredActivityView) {
+                throw new IllegalStateException("listener failure");
+            }
+            published.add(activity);
+        }, managedRegistry());
+
+        publisher.publishAcquired(UUID.randomUUID(), "RoleA", OWNER, COMPANION);
+
+        assertEquals(1, published.size());
+        assertInstanceOf(TameActivityView.class, published.getFirst());
+    }
 
     @Test
     void publishesMappedTameOutcomeAndIgnoresUnmanagedRoles() throws Exception {
@@ -77,6 +129,7 @@ class TameActivityPublisherTest {
             ActivityRuntime.clear();
         }
 
+        assertEquals(1, published.size());
         TameActivityView activity = assertInstanceOf(
                 TameActivityView.class, published.getFirst());
         assertEquals(CaptureTameAndLinkTestFixtures.OPERATION.value(),
