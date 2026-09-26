@@ -5,10 +5,10 @@ import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandManager;
 
 /** Keeps this embedded Beacon copy compatible with case-insensitive virtual groups. */
-final class BeaconPermissionCompatibility {
+public final class BeaconPermissionCompatibility {
     private BeaconPermissionCompatibility() { }
 
-    static void normalizeRegisteredCommand() {
+    public static void normalizeRegisteredCommand() {
         CommandManager manager = CommandManager.get();
         if (manager != null) normalize(manager.getCommandRegistration().get("beacon"));
     }

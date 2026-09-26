@@ -479,6 +479,9 @@ public class Tamework extends JavaPlugin {
         try {
             patchworkRuntime = new TameworkPatchworkRuntime(this);
             patchworkRuntime.start();
+            // PermissionsModule snapshots virtual groups before plugin start. Patchwork
+            // registers Beacon during setup, so normalize its command tree now.
+            com.alechilles.alecstamework.metrics.BeaconPermissionCompatibility.normalizeRegisteredCommand();
             configOverrideManager = new TwConfigOverrideManager(
                     this, patchworkRuntime::generatedPatchRoot
             );
