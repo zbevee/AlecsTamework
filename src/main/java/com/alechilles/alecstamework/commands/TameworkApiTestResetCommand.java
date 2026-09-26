@@ -21,7 +21,7 @@ public final class TameworkApiTestResetCommand extends AbstractPlayerCommand {
     public TameworkApiTestResetCommand() {
         super("reset", "server.tamework.commands.apiTestReset.description");
         requirePermission(TameworkApiTestPermission.NODE);
-        setPermissionGroups("OP", "Admin", "Operator");
+        setPermissionGroups("OP", "admin", "Operator");
     }
 
     @Override

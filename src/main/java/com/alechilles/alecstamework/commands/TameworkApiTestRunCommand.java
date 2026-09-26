@@ -27,7 +27,7 @@ public final class TameworkApiTestRunCommand extends AbstractTameworkServerComma
     public TameworkApiTestRunCommand() {
         super("run", "server.tamework.commands.apiTestRun.description");
         requirePermission(TameworkApiTestPermission.NODE);
-        setPermissionGroups("OP", "Admin", "Operator");
+        setPermissionGroups("OP", "admin", "Operator");
         setAllowsExtraArguments(true);
     }
 

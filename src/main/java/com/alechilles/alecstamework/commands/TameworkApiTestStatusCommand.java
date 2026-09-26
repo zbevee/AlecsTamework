@@ -21,7 +21,7 @@ public final class TameworkApiTestStatusCommand extends AbstractTameworkServerCo
     public TameworkApiTestStatusCommand() {
         super("status", "server.tamework.commands.apiTestStatus.description");
         requirePermission(TameworkApiTestPermission.NODE);
-        setPermissionGroups("OP", "Admin", "Operator");
+        setPermissionGroups("OP", "admin", "Operator");
     }
 
     @Override

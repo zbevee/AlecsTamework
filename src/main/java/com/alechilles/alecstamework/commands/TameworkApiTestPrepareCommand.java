@@ -21,7 +21,7 @@ public final class TameworkApiTestPrepareCommand extends AbstractPlayerCommand {
     public TameworkApiTestPrepareCommand() {
         super("prepare", "server.tamework.commands.apiTestPrepare.description");
         requirePermission(TameworkApiTestPermission.NODE);
-        setPermissionGroups("OP", "Admin", "Operator");
+        setPermissionGroups("OP", "admin", "Operator");
     }
 
     @Override
