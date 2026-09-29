@@ -927,9 +927,9 @@ tamework.ui.linkedPanel.breedingCooldown.unhappy=Zu unglücklich zum Züchten. E
 tamework.ui.linkedPanel.breedingCooldown.off=Die Zucht ist für dieses Tier ausgeschaltet.
 
 tamework.ui.linkedPanel.cached.lastKnown=Zuletzt bekannt
-tamework.ui.linkedPanel.cached.lastKnownTooltip=Zuletzt gespeicherter Zustand; wird aktualisiert, wenn der Begleiter geladen ist.
+tamework.ui.linkedPanel.cached.lastKnownTooltip=Zuletzt bekannt
 tamework.ui.linkedPanel.cached.unknown=Unbekannt
-tamework.ui.linkedPanel.cached.timerUnknown=Der gespeicherte Zustand enthält nicht genügend Zeitinformationen. Wird aktualisiert, wenn der Begleiter geladen ist.
+tamework.ui.linkedPanel.cached.timerUnknown=Verbleibende Zeit unbekannt.
 
 tamework.ui.commandTargetHud.foodPreferences=Futtervorlieben
 
@@ -1906,3 +1906,10 @@ tamework.ui.commandItem.view.species=Arten: {0}
 tamework.ui.commandItem.view.groups=Gruppen: {0}
 tamework.ui.commandItem.view.selected=Nur auf dieser Flöte ausgewählte
 tamework.ui.commandItem.view.search=Suche: {0}
+
+items.Tamework_Input_Rune_E.name = Tamework-Steuerung E
+items.Tamework_Input_Rune_E.description = Vorübergehende Steuerungsrune. Deine ausgerüstete Rune wird wiederhergestellt, wenn du den Gegenstand wechselst oder den Avatarflug beendest.
+items.Tamework_Input_Rune_R.name = Tamework-Steuerung R
+items.Tamework_Input_Rune_R.description = Vorübergehende Steuerungsrune. Deine ausgerüstete Rune wird wiederhergestellt, wenn du den Gegenstand wechselst oder den Avatarflug beendest.
+
+tamework.ui.notifications.transformation.unavailable=Dieses Tier kann sich gerade nicht verwandeln.

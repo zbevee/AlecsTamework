@@ -5,6 +5,40 @@
 - Added `tamework:tame_acquired` for successful wild-to-tamed interactions. This activity works without managed-content mappings. Legacy ownership-claim and mapped tame activities keep their existing behavior.
 
 - Fixed a startup collision with LuckPerms when another plugin registers the lowercase `admin` group. Tamework and its bundled Beacon commands now use that same group spelling during setup, before Hytale snapshots virtual groups; permission nodes and access checks are unchanged.
+## 4.3.1 - Newly Tamed Companion Talents - 2026-09-29
+
+- Fixed blank talent pages for newly tamed companions. Owned, loaded companions
+  can open their talents without being selected on a command flute.
+
+## 4.3.0 - Boss Tools and Update 7 Compatibility - 2026-09-28
+
+- Added `TameworkBeam`, a terrain-blocked NPC beam that follows the NPC's look
+  direction. Roles control its duration and turning speed to create dodgeable
+  sweeping attacks.
+- Added `TameworkBossBar` for native boss health bars with nearby-player
+  visibility and cleanup when combat ends, the boss dies, or it unloads.
+- Added `TameworkLeap` for a timed arc to a captured target position, with block
+  collision checks. This movement requires Hytale 0.6.7 or later.
+- Added optional landing markers, feet targeting, and NPC hatching to arc
+  projectiles. Projectile effects now activate when a projectile interaction is
+  loaded, including servers with capture and tranquilizers disabled.
+- Added an owned-NPC transformation effect that creates the replacement before
+  safely releasing the original companion. Fixed translation keys appearing
+  instead of configured interaction notifications.
+- Added Hytale Update 7 compatibility, including `0.7.0-pre.4`, while retaining
+  Update 5 and Update 6 support. E/R flight combat and command-item shortcuts
+  preserve and restore equipped runes when their temporary control runes are
+  released.
+- Added opt-in underwater avatar mounting with acceleration, a cruising speed
+  limit, forward boosts, braking, and rise/descend controls. It uses AvatarFlight's
+  rider and recovery lifecycle without altitude-based speed changes.
+- Added an experimental native hammerhead swimming mount to the optional example
+  pack, preserving the mount's breathing rules without a talisman or rider
+  transformation. In Hytale 0.6.8 live testing, crouch and Q input did not reach
+  the mounted handlers, W acceleration remained unverified, and passive sinking
+  remained. This example's custom controls still need further testing.
+- Simplified companion stat and timer tooltips by removing explanations of saved
+  data and loading.
 
 ## 4.2.0 - Companion Views and Stability - 2026-09-23
 

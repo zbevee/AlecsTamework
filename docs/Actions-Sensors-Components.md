@@ -2,6 +2,24 @@
 
 This file maps Tamework's currently registered NPC builders, item interactions, runtime components, and `/tw` commands.
 
+## Targeted Leap Movement
+
+`BodyMotion.Type: "TameworkLeap"` captures its sensor's position when movement
+starts and follows a parabolic arc to that exact point. `Duration` defaults to
+1.2 seconds and `Height` to 4 blocks above the line between the endpoints. Both
+must be positive. It requires a Walk controller and Hytale 0.6.7 or later.
+
+Keep the motion selected for the flight duration. Use a stored position sensor
+when target movement or target loss must not change the selected instruction.
+After the flight duration, wait for `OnGround` before triggering landing effects.
+If the target was airborne, normal gravity completes the descent after the arc.
+The destination is not continually updated, so players can dodge after takeoff.
+
+Movement uses the native collision-checked rail step on the NPC's world thread.
+Solid blocks stop the arc and normal gravity resumes; other entities do not
+shorten it. Deactivating the motion cancels it. The motion creates no system,
+scheduled task, persistence, or global entity scan.
+
 ## Shared NPC Instruction Components
 
 Use these components from downstream role assets with `Reference` and override
@@ -355,3 +373,41 @@ specific to each NPC.
 - `TameworkAlarm` is the instruction-side reset bridge for durable Tamework alarm state.
 - `TameworkEffectActive` is useful for gating behavior while status effects (for example tranquilizer) are active.
 - `/tw config reload` only reloads item-feature assets (`TwSpawnerConfig`, `TwNameItemConfig`, `TwCommandItemConfig`).
+
+## TameworkBossBar
+
+Update 6 NPC action that shows the native boss health bar to nearby players.
+Use it in a continuing combat instruction. `Range` defaults to 40 blocks;
+`Name` is an optional localization key (otherwise the native display name is used).
+Membership refreshes every 0.25 seconds using the world's player spatial index.
+The native encounter member system expires viewers after 0.75 seconds without
+a refresh, including when combat ends or NPC AI stops on death. Entity removal
+and unload explicitly hide the bar. This attaches only native membership and
+boss-bar components; it does not replace NPC role support with an encounter.
+
+```json
+{ "Continue": true, "Actions": [{ "Type": "TameworkBossBar", "Range": 40, "Name": "server.npcRoles.MyBoss.name" }] }
+```
+
+
+## TameworkBeam
+
+Update 6 and later. Repeats a terrain-clipped particle beam along the NPC's
+current head direction while the action is active. The role owns attack timing
+and turning: use `HeadMotion: Aim` with a low `RelativeTurnSpeed` and
+`BodyMotion: MatchLook` to create a dodgeable sweep. The action never aims directly
+at the target. Losing the locked target or dying stops emission and damage.
+
+`Range` limits the beam length, `Damage` is damage per tick, and
+`DamageInterval` sets tick spacing in seconds. Zero damage is supported for a
+harmless charge effect. Only player collision boxes are hit, through the native
+damage pipeline. Terrain clips both damage and visuals.
+
+`ParticleSystem` names a short-lived beam effect centered at its emitter and
+aligned to local Z. `ParticleNativeLength` is its full authored length at scale
+one. The effect is scaled to the clipped distance and emitted at the midpoint
+at most ten times per second. Particle lifetime should be about 0.11 seconds.
+`OriginHeight` and `OriginForward` position the source relative to the NPC;
+`BeamRadius` widens player collision checks. Intervals do not catch up with
+multiple damage ticks after a stall. State changes leave only the short-lived
+visual tail, with no deferred damage or background worker.
