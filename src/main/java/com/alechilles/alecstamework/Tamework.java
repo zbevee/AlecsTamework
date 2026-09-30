@@ -98,6 +98,7 @@ import com.alechilles.alecstamework.debug.CompanionXpEventDebugLogService;
 import com.alechilles.alecstamework.debug.PlayerInputDebugProbe;
 import com.alechilles.alecstamework.npc.actions.BreedingPairAdmissionRegistry;
 import com.alechilles.alecstamework.npc.actions.HeldItemAttachmentInteractionService;
+import com.alechilles.alecstamework.items.OwnedNpcTransformationInteractionService;
 import com.alechilles.alecstamework.npc.progression.CompanionLifeStageService;
 import com.alechilles.alecstamework.npc.progression.CompanionProgressionSignalBus;
 import com.alechilles.alecstamework.integration.creditor.CreditorIntegration;
@@ -479,6 +480,9 @@ public class Tamework extends JavaPlugin {
         try {
             patchworkRuntime = new TameworkPatchworkRuntime(this);
             patchworkRuntime.start();
+            // PermissionsModule snapshots virtual groups before plugin start. Patchwork
+            // registers Beacon during setup, so normalize its command tree now.
+            com.alechilles.alecstamework.metrics.BeaconPermissionCompatibility.normalizeRegisteredCommand();
             configOverrideManager = new TwConfigOverrideManager(
                     this, patchworkRuntime::generatedPatchRoot
             );
@@ -809,6 +813,10 @@ public class Tamework extends JavaPlugin {
                 HeldItemAttachmentInteractionService.EXCHANGE_ATTACHMENT_EFFECT_ID,
                 heldItemAttachmentInteractions::exchangeAttachment
         );
+        OwnedNpcTransformationInteractionService ownedNpcTransformations =
+                new OwnedNpcTransformationInteractionService(persistenceComposition.facades());
+        interactionExtensionRegistry.registerBuiltInEffect(
+                "tamework:transform_owned_npc", ownedNpcTransformations::apply);
         traitEffectRegistry = new TraitEffectRegistry(
                 getLogger(),
                 new ReplacementNpcProfilesApi(
@@ -1249,6 +1257,18 @@ public class Tamework extends JavaPlugin {
     }
 
     private void deferPersistenceIndependentRuntimeParticipants() {
+        if (com.alechilles.alecstamework.compat.runes.RuneInputRuntime.isSupported()) {
+            deferEntitySystem(TameworkRuntimeModule.CORE_OWNERSHIP,
+                    "rune-input-load", com.alechilles.alecstamework.compat.runes.RuneInputRuntime.Load::new);
+            deferEntitySystem(TameworkRuntimeModule.CORE_OWNERSHIP,
+                    "rune-input-tick", com.alechilles.alecstamework.compat.runes.RuneInputRuntime.Tick::new);
+            deferEntitySystem(TameworkRuntimeModule.CORE_OWNERSHIP,
+                    "rune-input-active-slot", com.alechilles.alecstamework.compat.runes.RuneInputRuntime.ActiveSlot::new);
+            deferEntitySystem(TameworkRuntimeModule.CORE_OWNERSHIP,
+                    "rune-input-hotbar-change", com.alechilles.alecstamework.compat.runes.RuneInputRuntime.HotbarChange::new);
+            deferEntitySystem(TameworkRuntimeModule.CORE_OWNERSHIP,
+                    "rune-input-flight-change", com.alechilles.alecstamework.compat.runes.RuneInputRuntime.FlightChange::new);
+        }
         deferEntitySystem(TameworkRuntimeModule.SCARECROWS,
                 "scarecrow-block-placed", ScarecrowBlockEventSystems.Placed::new);
         deferEntitySystem(TameworkRuntimeModule.SCARECROWS,

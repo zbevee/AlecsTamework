@@ -8,6 +8,7 @@ import com.alechilles.alecstamework.api.ActivityIds;
 import com.alechilles.alecstamework.api.ActivityParticipantView;
 import com.alechilles.alecstamework.api.ManagedActivityView;
 import com.alechilles.alecstamework.api.TameActivityView;
+import com.alechilles.alecstamework.api.TameAcquiredActivityView;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,32 @@ class LiveActivityFeedTest {
             "10000000-0000-0000-0000-000000000001");
     private static final UUID COMPANION = UUID.fromString(
             "20000000-0000-0000-0000-000000000001");
+
+    @Test
+    void genuineTameHasExactFilterSequenceFailureIsolationAndClosedFeedBehavior() {
+        LiveActivityFeed feed = new LiveActivityFeed();
+        ActivityFilter filter = new ActivityFilter(
+                Set.of(ActivityDomain.TAMING), Set.of(ActivityIds.TAME_ACQUIRED));
+        List<TameAcquiredActivityView> received = new ArrayList<>();
+        feed.subscribe("broken-tame", filter, activity -> { throw new AssertionError("consumer failed"); });
+        feed.subscribe("genuine-tame", filter,
+                activity -> received.add((TameAcquiredActivityView) activity));
+        TameAcquiredActivityView activity = new TameAcquiredActivityView(
+                new ActivityHeader(UUID.randomUUID(), ActivityIds.TAME_ACQUIRED, Instant.now()),
+                "Tamed_Test", OWNER, COMPANION);
+
+        feed.publish(tameActivity());
+        feed.publish(activity);
+        assertEquals(1, received.size());
+        assertEquals(1L, received.getFirst().header().sequence());
+        assertEquals(activity.header().operationId(), received.getFirst().header().operationId());
+        assertEquals(activity.roleId(), received.getFirst().roleId());
+        assertEquals(OWNER, received.getFirst().ownerId());
+        assertEquals(COMPANION, received.getFirst().companionId());
+        feed.close();
+        feed.publish(activity);
+        assertEquals(1, received.size());
+    }
 
     @Test
     void deliversOnlyMatchingDomainsAndExactActions() {

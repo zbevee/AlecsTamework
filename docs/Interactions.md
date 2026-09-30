@@ -363,6 +363,9 @@ Fields:
 - `ProjectileId` required projectile asset id.
 - `Target` optional enum: `USER`, `OWNER`, `TARGET`. Defaults to `TARGET`.
 - `TargetSlot` optional NPC marked target slot. When present, Tamework first tries the source NPC's marked target in that slot and falls back to `Target` resolution if none is present.
+- `TargetGroundOffset` optional Y offset above the entity's feet. When omitted, entity aiming still uses eye height. This does not project airborne targets onto terrain and does not change look or random targets.
+- `LandingMarkerParticleSystemId` optional particle system emitted once at the frozen solver target after a successful launch. Its asset controls marker lifetime. Use zero spread and zero projectile shot offsets when matching the marked point matters.
+- `ImpactSpawnNpcRole` optional role ID spawned once at the projectile's final position on normal removal, including lifetime expiry. The role controls chase, lifetime, and despawn behavior. Unloading a world does not hatch projectiles.
 - `YawSpreadDegrees` optional symmetric yaw spread applied after the arc is solved.
 - `PitchSpreadDegrees` optional symmetric pitch spread applied after the arc is solved.
 - `FailIfNoSolution` optional bool. Defaults to `true`.
@@ -549,3 +552,26 @@ Optional action overrides:
 - `IsMountable`
 - `IsHarvestable`
 - `HarvestInteractionContext`
+
+## Owned NPC transformations
+
+The built-in custom effect `tamework:transform_owned_npc` replaces an owned,
+tamed NPC with a fresh NPC. It creates the replacement before releasing the
+original companion through the existing persistence authority, and removes the
+replacement if release fails. Use `Param` for the target role and `JsonPayload`
+for `Item` (one held item consumed) and `Message` (a notification translation key).
+The interacting player must own the NPC, crouch, and hold the specified item.
+This effect supports ordinary companions, not command-roster projections.
+The new NPC starts at full health without the original companion's owner,
+command links, or progression. Other effects should not be combined with this
+asynchronous effect; it owns the item cost and success notification.
+
+```json
+{
+  "Custom": [{
+    "Id": "tamework:transform_owned_npc",
+    "Param": "My_Boss_Role",
+    "JsonPayload": "{\"Item\":\"Ingredient_Bar_Gold\",\"Message\":\"server.myMod.bossSummoned\"}"
+  }]
+}
+```

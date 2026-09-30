@@ -11,7 +11,7 @@ public final class TameworkConfigPermission {
     private static final String[] ADMIN_PERMISSION_GROUPS = {
             "hytale:Admin",
             "OP",
-            "Admin",
+            "admin",
             "Operator"
     };
     private static final String[] FALLBACK_NODES = {

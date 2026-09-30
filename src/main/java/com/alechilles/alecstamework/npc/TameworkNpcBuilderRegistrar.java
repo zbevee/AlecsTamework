@@ -1,8 +1,12 @@
 package com.alechilles.alecstamework.npc;
 
 import java.util.logging.Level;
+import com.alechilles.alecstamework.compat.HytaleApiLevel;
+import com.alechilles.alecstamework.npc.movement.BuilderBodyMotionTameworkLeap;
 
 import com.alechilles.alecstamework.lifecycle.TameworkEventRegistrationSupport;
+import com.alechilles.alecstamework.npc.actions.BuilderActionTameworkBossBar;
+import com.alechilles.alecstamework.npc.actions.BuilderActionTameworkBeam;
 import com.alechilles.alecstamework.npc.actions.BuilderActionTameworkCaptureOwner;
 import com.alechilles.alecstamework.npc.actions.BuilderActionTameworkCaptureStranger;
 import com.alechilles.alecstamework.npc.actions.BuilderActionTameworkCaptureWild;
@@ -164,6 +168,10 @@ public final class TameworkNpcBuilderRegistrar {
             );
             actionFactory.add(BuilderActionTameworkSetTamed.BUILDER_ID, BuilderActionTameworkSetTamed::new);
             actionFactory.add(BuilderActionTameworkSetOwner.BUILDER_ID, BuilderActionTameworkSetOwner::new);
+            if (HytaleApiLevel.isUpdate6OrLater()) {
+                actionFactory.add(BuilderActionTameworkBossBar.BUILDER_ID, BuilderActionTameworkBossBar::new);
+                actionFactory.add(BuilderActionTameworkBeam.BUILDER_ID, BuilderActionTameworkBeam::new);
+            }
         }
 
         BuilderFactory<Sensor> sensorFactory = npcPlugin.getBuilderManager().getFactory(Sensor.class);
@@ -227,6 +235,10 @@ public final class TameworkNpcBuilderRegistrar {
             plugin.getLogger().at(Level.WARNING).log("Tamework NPC builder registration: Body motion factory missing.");
         } else {
             plugin.getLogger().at(Level.INFO).log("Tamework NPC builder registration: Body motion factory ready.");
+            if (HytaleApiLevel.isUpdate6OrLater()) {
+                bodyMotionFactory.add(BuilderBodyMotionTameworkLeap.BUILDER_ID,
+                        BuilderBodyMotionTameworkLeap::new);
+            }
             bodyMotionFactory.add(
                     BuilderBodyMotionTameworkFlyingOrbit.BUILDER_ID,
                     BuilderBodyMotionTameworkFlyingOrbit::new

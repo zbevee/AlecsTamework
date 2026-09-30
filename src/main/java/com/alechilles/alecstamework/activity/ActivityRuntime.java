@@ -300,6 +300,19 @@ public final class ActivityRuntime {
         );
     }
 
+    /** Publishes a successful Tame interaction after the wild-state and owner checks. */
+    public static void publishTameAcquired(
+            @Nonnull UUID operationId,
+            @Nullable String roleId,
+            @Nullable UUID ownerId,
+            @Nullable UUID companionId
+    ) {
+        RuntimeState state = CURRENT.get();
+        if (state.tamePublisher != null) {
+            state.tamePublisher.publishAcquired(operationId, roleId, ownerId, companionId);
+        }
+    }
+
     /** Publishes one committed wild-to-tamed acquisition. */
     public static void publishTame(
             @Nonnull UUID operationId,

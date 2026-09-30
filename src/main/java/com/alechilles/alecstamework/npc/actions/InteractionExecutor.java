@@ -355,7 +355,7 @@ final class InteractionExecutor {
                 || !acquiringOwnerId.equals(finalOwnerId)) {
             return;
         }
-        ActivityRuntime.publishTame(
+        ActivityRuntime.publishTameAcquired(
                 operationId, finalRoleId, finalOwnerId, companionId);
     }
 
